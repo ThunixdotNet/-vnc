@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+USER=$(whoami)
+
+# get new display 
+DISPLAY=0
+for file in /var/lib/vnc/* ; do
+    if [ $(cat $file) -gt $DISPLAY ] ; then
+        DISPLAY=$(cat $file)
+    fi
+done
+let "DISPLAY++"
+
+echo $DISPLAY
+
+# add user file
+echo "$DISPLAY" > /var/lib/vnc/${USER}
+chmod 644 /var/lib/vnc/${USER}
+
+/usr/local/bin/startvnc

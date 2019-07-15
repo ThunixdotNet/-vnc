@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+USER=$(whoami)
+DISPLAY=$(cat /var/lib/vnc/${USER})
+
+vncserver :${DISPLAY}
