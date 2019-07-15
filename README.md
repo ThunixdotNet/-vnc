@@ -1,0 +1,3 @@
+# vnc
+
+Scripts for vnc
