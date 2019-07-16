@@ -10,10 +10,14 @@ for file in /var/lib/vnc/* ; do
 done
 let "DISPLAY++"
 
-echo $DISPLAY
-
 # add user file
 echo "$DISPLAY" > /var/lib/vnc/${USER}
 chmod 644 /var/lib/vnc/${USER}
 
 /usr/local/bin/startvnc
+
+PORT=$((DISPLAY + 5900))
+
+echo
+echo "Your port number is ${PORT}; please note it down."
+echo "You might like to see https://wiki.thunix.net/wiki/vnc for further information."
