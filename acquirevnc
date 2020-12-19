@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
-USER=$(whoami)
+USER="$(whoami)"
 
-# get new display 
-DISPLAY=0
-for file in /var/lib/vnc/* ; do
-    if [ $(cat $file) -gt $DISPLAY ] ; then
-        DISPLAY=$(cat $file)
-    fi
+# get new display
+TAKEN_PORTS=( $(cat /var/lib/vnc/* | sort -n) )
+[ -f "/var/lib/vnc/${USER}" ] && TAKEN_PORTS=( "${TAKEN_PORTS[@]/$(<"/var/lib/vnc/${USER}")}" )
+DISPLAY=0; for TAKEN_PORT in ${TAKEN_PORTS[@]}; do
+        if [ "$TAKEN_PORT" -le "$DISPLAY" ];then
+                DISPLAY=$((DISPLAY + 1))
+        fi
 done
-let "DISPLAY++"
+unset TAKEN_PORTS TAKEN_PORT
 
 # add user file
-echo "$DISPLAY" > /var/lib/vnc/${USER}
-chmod 644 /var/lib/vnc/${USER}
+OLD_UMASK="$(umask)"
+umask 0022
+echo "$DISPLAY" > "/var/lib/vnc/${USER}"
+umask $OLD_UMASK
+PORT=$((DISPLAY + 5900))
+unset DISPLAY OLD_UMASK
 
 /usr/local/bin/startvnc
-
-PORT=$((DISPLAY + 5900))
 
 echo
 echo "Your port number is ${PORT}; please note it down."
